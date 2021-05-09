@@ -46,10 +46,10 @@ def tokenized_wikipedia_dataset(min_tokens_per_text, max_tokens_per_text, batch_
   ds = tfds.load('wikipedia/20200301.en', split='train', try_gcs=True)
 
   def text_to_encoded(text):
-    encoded = np.array(e.encode(str(text))[:MAX_NUM_TOKENS_PER_TEXT], np.int32)
-    return [encoded] if len(encoded) >= MIN_NUM_TOKENS_PER_TEXT else []
+    encoded = np.array(e.encode(str(text))[:max_tokens_per_text], np.int32)
+    return [encoded] if len(encoded) >= min_tokens_per_text else []
 
-  num_tokens, *_ = *({MAX_NUM_TOKENS_PER_TEXT} & {MIN_NUM_TOKENS_PER_TEXT}), None
+  num_tokens, *_ = *({max_tokens_per_text} & {min_tokens_per_text}), None
 
   ds = ds.flat_map(lambda data: tf.data.Dataset.from_generator(
       text_to_encoded, tf.int32, tf.TensorShape((num_tokens,)), (data['text'],)))
