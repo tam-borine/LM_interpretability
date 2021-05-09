@@ -42,11 +42,11 @@ def load_snapshot(ckpt, session=None, var_list=None, reshape=False):
     values = [value for variable, value in grab_values(variables, reader, reshape=reshape)]
     assign_values(variables, values, session=session)
 
-def tokenized_wikipedia_dataset(min_tokens_per_text, max_tokens_per_text, batch_size=1):
+def tokenized_wikipedia_dataset(encoder, min_tokens_per_text, max_tokens_per_text, batch_size=1):
   ds = tfds.load('wikipedia/20200301.en', split='train', try_gcs=True)
 
   def text_to_encoded(text):
-    encoded = np.array(e.encode(str(text))[:max_tokens_per_text], np.int32)
+    encoded = np.array(encoder.encode(str(text))[:max_tokens_per_text], np.int32)
     return [encoded] if len(encoded) >= min_tokens_per_text else []
 
   num_tokens, *_ = *({max_tokens_per_text} & {min_tokens_per_text}), None
