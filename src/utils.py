@@ -54,4 +54,4 @@ def tokenized_wikipedia_dataset(min_tokens_per_text, max_tokens_per_text, batch_
   ds = ds.flat_map(lambda data: tf.data.Dataset.from_generator(
       text_to_encoded, tf.int32, tf.TensorShape((num_tokens,)), (data['text'],)))
 
-  ds = ds.batch(1, True).prefetch(tf.data.experimental.AUTOTUNE)
+  return ds.batch(batch_size, True).prefetch(tf.data.experimental.AUTOTUNE)
