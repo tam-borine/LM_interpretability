@@ -1,3 +1,4 @@
+import tensorflow as tf
 from model import shape_list, attn, mlp, positions_for
 
 # Forked from openai's gpt2 implementation with a couple of extra named `tf.identity`.
