@@ -61,10 +61,12 @@ def instrumented_model(
           h_post_norm = tf.get_default_graph().get_tensor_by_name(f'model/h{layer}/ln_1/post_norm:0')
           # In this scope, `norm` computes the final layer norm pre-wte.
           h_pre_norm = norm(h_pre_norm, 'ln_f', reuse=True)
+          # Therefore, h_pre_norm is the intermediate activation entering `layer` decoded with the final affine transform.
+          # h_post_norm is the intermediate activation decoded with the affine transform that it would normally enter.
           for k, v in dict(pre_norm=h_pre_norm, post_norm=h_post_norm).items():
             v_flat = tf.reshape(v, [batch_dim*sequence_dim, hparams.n_embd])
             logits = tf.matmul(v_flat, wte, transpose_b=True)
-            results[f'logits_{k}_{layer}'] = tf.reshape(logits, [batch_dim, sequence_dim, hparams.n_vocab])
+            results[f'logits_{k}_{layer}'] = tf.reshape(logits, [batch_dim, sequence_dim, hparams.n_vocab], name=f'logits_{k}_{layer}')
 
         # Decode final activation as logits
         h_flat = tf.reshape(h, [batch_dim*sequence_dim, hparams.n_embd])
